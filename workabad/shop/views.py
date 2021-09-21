@@ -3,42 +3,78 @@ from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView, DetailView
 
 from .forms import *
 # Create your views here.
-def index(request):
-    posts=Post.objects.all()
-    return render(request,'shop/index.html',{'posts':posts})
 
-def add_post(request):
+class WorkHome(ListView):
+    model=Post
+    template_name = 'shop/index.html'
+    context_object_name = 'posts'
 
-    if request.method=='POST':
-        form=AddPostForm(request.POST)
-        form.save()
-    else:
-        form=AddPostForm()
-    return render(request,'shop/add_post.html',{'form':form})
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data()
+        cats=Category.objects.all()
+        context['cats']=cats
+        return context
 
-def show_post(request,post_id):
-    post = get_object_or_404(Post, id=post_id)
-    form = AddCommentForm()
 
-    if request.method=='POST':
-        form=AddCommentForm(request.POST)
-        form.save()
-    else:
-        form=AddCommentForm()
-    return render(request,'shop/show_post.html',{'post':post,'form':form})
+class ShowCategory(ListView):
+    model=Category
+    template_name = 'shop/show_category.html'
+    context_object_name = 'cat'
 
-def add_comment(request,post_id):
-    post = get_object_or_404(Post, id=post_id)
-    if request.method=='POST':
-        form=AddCommentForm(request.POST)
-        form.save()
-    else:
-        form=AddCommentForm()
-    return render(request, 'shop/add_comment.html', {'post': post, 'form': form})
+    def get_context_data(self):
+        context=super().get_context_data()
+        posts=Post.objects.filter(category_id=self.kwargs['category_id'])
+        cat=Category.objects.get(id=self.kwargs['category_id'])
+        context['posts']=posts
+        context['cat']=cat
+        return context
+
+    #def get_queryset(self):
+       # return Post.objects.filter(category_id=self.kwargs['category_id'])
+
+
+class ShowTag(ListView):
+    model=Tag
+    template_name = 'shop/show_tag.html'
+    context_object_name = 'tag'
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data()
+        posts=Post.objects.filter(tags__id=self.kwargs['tag_id'])
+        context['posts']=posts
+        return context
+    def get_queryset(self):
+        return Tag.objects.get(id=self.kwargs['tag_id'])
+
+
+class ShowPost(ListView):
+    model = Post
+    template_name = 'shop/show_post.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data()
+        #post=Post.objects.get(id=self.kwargs['post_id'])
+        #context['post']=post
+        return context
+
+    def get_queryset(self):
+        return Post.objects.get(id=self.kwargs['post_id'])
+
+class AddComment(CreateView):
+    form_class=AddCommentForm
+    template_name = 'shop/add_comment.html'
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data()
+        post = Post.objects.get(id=self.kwargs['post_id'])
+        context['post']=post
+        return context
+
 
 class RegisterUser(CreateView):
     form_class=Reqistration

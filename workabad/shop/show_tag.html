@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show tag page</title>
+</head>
+<body>
+<h2> Tag: {{tag.name}}</h2>
+
+{% for post in posts %}
+<ul>
+    <li><h3><a href="{% url 'show_post' post.pk %}">{{post.title}}</a></h3></li></br>
+</ul>
+
+{% endfor %}
+
+</body>
+</html>

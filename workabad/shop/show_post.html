@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show post page</title>
+</head>
+<body>
+
+
+    <h2>Article title: {{post.title}}</h2></br>
+    <h4>{{post.text}}</h4>
+    <h3><a href="{% url 'show_category' post.category.pk %}">Category: {{post.category}}</a></h3>
+
+
+    </br>
+    </br>
+    <h3>Comments section: </h3>
+    {% if not post.comments.all %}
+    No comments yet
+{% else %}
+
+{% for comment in post.comments.all %}
+<ul>
+    <li><h4>{{comment.text}}</h4></li></br>
+</ul>
+
+{% endfor %}
+{% endif %}
+
+ <h3>Leave your comment from here: <a href="{% url 'add_comment' post.pk %}">Comment<a/></h3>
+</body>
+</html>

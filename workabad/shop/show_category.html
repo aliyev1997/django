@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show Category</title>
+</head>
+<body>
+  <h1>{{cat.title}}</h1></br>
+
+    <h2>Article list of this category: </h2>
+
+
+    {% if not posts %}
+    No posts  yet
+{% else %}
+
+{% for post in posts %}
+<ul>
+    <li><h3><a href="{% url 'show_post' post.pk %}">{{post.title}}</a></h3></li></br>
+</ul>
+
+{% endfor %}
+{% endif %}
+</body>
+</html>

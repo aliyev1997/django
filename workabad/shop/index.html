@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>This is home page</title>
+</head>
+<body>
+<h2>All News</h2>
+
+{% if request.user.is_authenticated %}
+<li><a href="{% url 'logout' %}">Log out</a>| {{user.username}}</li>
+{% else %}
+<li><a href="{% url 'login' %}">Login</a>| <a href="{% url 'registration' %}">Register new user here</a></li> </br>
+{% endif %}
+</br>
+
+{% for post in posts %}
+<ul>
+
+    <li>Post title:<a href="{% url 'show_post' post.pk %}">{{post.title}}</a></li> </br>
+    <li>Category:<a href="{% url 'show_category' post.category.pk %}">{{post.category}}</a></li></br>
+    {% if not post.tags.all %}
+
+    {% else %}
+
+    {% for tag in post.tags.all %}
+    <a href="{% url 'show_tag' tag.pk %}">#{{tag.name}}</a>
+    {% endfor %}
+    {% endif %}
+    </br>
+    </br>
+    </br>
+
+
+</ul>
+
+{% endfor %}
+
+
+
+
+</body>
+</html>
