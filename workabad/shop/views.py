@@ -6,18 +6,20 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView
 
 from .forms import *
+from .mixins import *
 # Create your views here.
 
-class WorkHome(ListView):
+class WorkHome(DataMixin,ListView):
     model=Post
     template_name = 'shop/index.html'
-    context_object_name = 'posts'
 
-    def get_context_data(self, **kwargs):
-        context=super().get_context_data()
-        cats=Category.objects.all()
-        context['cats']=cats
+
+    def get_context_data(self ,**kwargs):
+        context=super().get_context_data(**kwargs)
+
         return context
+
+
 
 
 class ShowCategory(ListView):
